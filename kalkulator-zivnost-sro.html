@@ -384,6 +384,29 @@ function setTab(name) {
 
 document.getElementById('prijem').addEventListener('input', calc);
 document.getElementById('vydavky').addEventListener('input', calc);
+
+// Mobile touch fix pre slidery v iframe
+['prijem', 'vydavky'].forEach(function(id) {
+  var slider = document.getElementById(id);
+  var startX, startVal;
+
+  slider.addEventListener('touchstart', function(e) {
+    startX = e.touches[0].clientX;
+    startVal = parseInt(slider.value);
+    e.stopPropagation();
+  }, { passive: true });
+
+  slider.addEventListener('touchmove', function(e) {
+    e.stopPropagation();
+    var diff = e.touches[0].clientX - startX;
+    var range = slider.max - slider.min;
+    var width = slider.offsetWidth;
+    var delta = Math.round((diff / width) * range / slider.step) * slider.step;
+    var newVal = Math.min(slider.max, Math.max(slider.min, startVal + delta));
+    slider.value = newVal;
+    calc();
+  }, { passive: true });
+});
 calc();
 </script>
 </body>
