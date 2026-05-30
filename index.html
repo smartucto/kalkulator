@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>SmartÚčto | Online účtovná kancelária</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', system-ui, sans-serif;
+    background: #0a1f4e;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1.25rem;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  /* Dekoratívne kruhy v pozadí */
+  body::before {
+    content: '';
+    position: fixed;
+    top: -120px;
+    right: -120px;
+    width: 400px;
+    height: 400px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(45,127,249,0.18) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  body::after {
+    content: '';
+    position: fixed;
+    bottom: -100px;
+    left: -100px;
+    width: 350px;
+    height: 350px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(45,127,249,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .card {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 28px;
+    padding: 2.5rem 2rem;
+    max-width: 420px;
+    width: 100%;
+    text-align: center;
+    backdrop-filter: blur(10px);
+    animation: fadeUp 0.5s ease both;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .logo-wrap {
+    margin-bottom: 1.5rem;
+  }
+
+  .logo-circle {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #2D7FF9, #0a1f4e);
+    border: 2px solid rgba(45,127,249,0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+    font-family: 'DM Serif Display', serif;
+    font-size: 28px;
+    color: #fff;
+    letter-spacing: -1px;
+  }
+
+  .name {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.75rem;
+    color: #fff;
+    margin-bottom: 0.25rem;
+    letter-spacing: -0.5px;
+  }
+
+  .name span { color: #2D7FF9; }
+
+  .tagline {
+    font-size: 13px;
+    color: rgba(255,255,255,0.5);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+  }
+
+  .description {
+    font-size: 14px;
+    color: rgba(255,255,255,0.65);
+    line-height: 1.6;
+    margin-bottom: 2rem;
+  }
+
+  .links {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .link-btn {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 1rem 1.25rem;
+    border-radius: 14px;
+    text-decoration: none;
+    font-size: 15px;
+    font-weight: 500;
+    transition: transform 0.15s, box-shadow 0.15s;
+    cursor: pointer;
+    border: none;
+    width: 100%;
+    text-align: left;
+  }
+
+  .link-btn:active { transform: scale(0.98); }
+
+  .link-btn.primary {
+    background: #2D7FF9;
+    color: #fff;
+  }
+
+  .link-btn.primary:hover { box-shadow: 0 4px 20px rgba(45,127,249,0.4); }
+
+  .link-btn.secondary {
+    background: rgba(255,255,255,0.08);
+    color: #fff;
+    border: 1px solid rgba(255,255,255,0.12);
+  }
+
+  .link-btn.secondary:hover { background: rgba(255,255,255,0.13); }
+
+  .btn-icon {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+
+  .primary .btn-icon { background: rgba(255,255,255,0.2); }
+  .secondary .btn-icon { background: rgba(255,255,255,0.1); }
+
+  .btn-text { flex: 1; }
+  .btn-label { display: block; font-weight: 600; font-size: 15px; }
+  .btn-sub { display: block; font-size: 12px; opacity: 0.7; margin-top: 1px; }
+
+  .btn-arrow {
+    font-size: 18px;
+    opacity: 0.6;
+  }
+
+  .divider {
+    height: 1px;
+    background: rgba(255,255,255,0.08);
+    margin: 1.5rem 0;
+  }
+
+  .footer {
+    font-size: 11px;
+    color: rgba(255,255,255,0.3);
+    margin-top: 1.75rem;
+    letter-spacing: 0.04em;
+  }
+</style>
+</head>
+<body>
+
+<div class="card">
+  <div class="logo-wrap">
+    <div class="logo-circle">S</div>
+    <h1 class="name">Smart<span>Účto</span></h1>
+    <p class="tagline">Online účtovná kancelária · Nitra</p>
+  </div>
+
+  <p class="description">
+    Účtovníctvo, mzdy a dane — rýchlo a digitálne.<br>
+    Stačí mobil, všetko vybavíme za vás.
+  </p>
+
+  <div class="links">
+    <a class="link-btn primary" href="https://smartucto.github.io/kalkulator/kalkulator-zivnost-sro.html" target="_blank">
+      <div class="btn-icon">🧮</div>
+      <div class="btn-text">
+        <span class="btn-label">Kalkulačka 2026</span>
+        <span class="btn-sub">Živnosť vs. s.r.o. — uvidíte rozdiel v €</span>
+      </div>
+      <span class="btn-arrow">→</span>
+    </a>
+
+    <a class="link-btn secondary" href="https://www.smartucto.sk" target="_blank">
+      <div class="btn-icon">🌐</div>
+      <div class="btn-text">
+        <span class="btn-label">Náš web</span>
+        <span class="btn-sub">smartucto.sk</span>
+      </div>
+      <span class="btn-arrow">→</span>
+    </a>
+
+    <a class="link-btn secondary" href="mailto:info@smartucto.sk?subject=Dopyt z Instagramu">
+      <div class="btn-icon">✉️</div>
+      <div class="btn-text">
+        <span class="btn-label">Napíšte nám</span>
+        <span class="btn-sub">info@smartucto.sk</span>
+      </div>
+      <span class="btn-arrow">→</span>
+    </a>
+  </div>
+
+  <div class="divider"></div>
+  <p class="footer">© 2026 SmartÚčto, s.r.o. · Účtovníctvo bez papierov</p>
+</div>
+
+</body>
+</html>
