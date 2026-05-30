@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Živnosť vs. S.r.o. – kalkulačka | SmartÚčto</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    background: #f7f7f5;
+    color: #1a1a1a;
+    min-height: 100vh;
+    padding: 0;
+  }
+
+  .hero {
+    background: #1a1a1a;
+    color: #fff;
+    padding: 3rem 2rem 2.5rem;
+    text-align: center;
+  }
+  .hero-label {
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #E8381A;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+  }
+  .hero h1 {
+    font-size: clamp(1.6rem, 4vw, 2.4rem);
+    font-weight: 700;
+    line-height: 1.15;
+    margin-bottom: 0.75rem;
+  }
+  .hero h1 span { color: #E8381A; }
+  .hero p {
+    font-size: 15px;
+    color: #aaa;
+    max-width: 520px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+
+  .container {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 2rem 1.25rem 3rem;
+  }
+
+  /* SLIDERS */
+  .sliders-box {
+    background: #fff;
+    border: 1px solid #e5e5e0;
+    border-radius: 14px;
+    padding: 1.75rem 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .sliders-box h2 {
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #888;
+    font-weight: 600;
+    margin-bottom: 1.25rem;
+  }
+  .slider-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 1rem;
+  }
+  .slider-row:last-child { margin-bottom: 0; }
+  .slider-row label {
+    font-size: 14px;
+    color: #444;
+    min-width: 170px;
+    flex-shrink: 0;
+  }
+  .slider-row input[type=range] {
+    flex: 1;
+    -webkit-appearance: none;
+    height: 4px;
+    border-radius: 2px;
+    background: #e5e5e0;
+    outline: none;
+    cursor: pointer;
+  }
+  .slider-row input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #E8381A;
+    cursor: pointer;
+    border: 2px solid #fff;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+  }
+  .slider-val {
+    font-size: 15px;
+    font-weight: 700;
+    min-width: 80px;
+    text-align: right;
+    color: #1a1a1a;
+  }
+
+  /* TABS */
+  .tabs {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 1.25rem;
+    flex-wrap: wrap;
+  }
+  .tab {
+    font-size: 13px;
+    padding: 7px 16px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    background: #fff;
+    color: #555;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.15s;
+  }
+  .tab:hover { border-color: #E8381A; color: #E8381A; }
+  .tab.active {
+    background: #1a1a1a;
+    color: #fff;
+    border-color: #1a1a1a;
+  }
+
+  /* CARDS */
+  .cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-bottom: 1.25rem;
+  }
+  @media (max-width: 540px) {
+    .cards { grid-template-columns: 1fr; }
+    .slider-row label { min-width: 130px; }
+  }
+
+  .card {
+    background: #fff;
+    border: 1px solid #e5e5e0;
+    border-radius: 14px;
+    padding: 1.25rem;
+    transition: border-color 0.2s;
+  }
+  .card.winner { border: 2px solid #1aad6e; }
+
+  .card-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 1rem;
+    padding-bottom: 0.875rem;
+    border-bottom: 1px solid #f0f0ec;
+  }
+  .card-icon {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 17px;
+    flex-shrink: 0;
+  }
+  .icon-z { background: #fff0ed; }
+  .icon-s { background: #edfaf3; }
+
+  .card-title { font-size: 16px; font-weight: 700; color: #1a1a1a; }
+  .badge {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: 6px;
+    margin-top: 2px;
+  }
+  .badge-green { background: #edfaf3; color: #0d7a4a; }
+  .badge-orange { background: #fff0ed; color: #c0390f; }
+  .badge-gray { background: #f0f0ec; color: #666; }
+
+  .row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 5px 0;
+    border-bottom: 1px solid #f5f5f2;
+    font-size: 13px;
+    gap: 8px;
+  }
+  .row:last-child { border-bottom: none; }
+  .row-label { color: #666; flex: 1; }
+  .row-val { font-weight: 600; color: #1a1a1a; white-space: nowrap; }
+  .row-val.neg { color: #c0390f; }
+  .row-val.pos { color: #0d7a4a; }
+
+  .total-block {
+    margin-top: 1rem;
+    padding-top: 0.875rem;
+    border-top: 2px solid #1a1a1a;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+  .total-label { font-size: 12px; color: #666; text-transform: uppercase; letter-spacing: 0.06em; }
+  .total-val { font-size: 22px; font-weight: 800; color: #1a1a1a; }
+  .zatazenie {
+    margin-top: 8px;
+    font-size: 12px;
+    color: #888;
+    text-align: right;
+  }
+
+  /* VERDICT */
+  .verdict {
+    background: #1a1a1a;
+    color: #fff;
+    border-radius: 14px;
+    padding: 1.25rem 1.5rem;
+    font-size: 14px;
+    line-height: 1.65;
+    margin-bottom: 1rem;
+  }
+  .verdict strong { color: #E8381A; }
+
+  .note {
+    font-size: 11.5px;
+    color: #aaa;
+    line-height: 1.6;
+    padding: 0 0.25rem;
+  }
+
+  /* TAB: PRAH */
+  .prah-table {
+    background: #fff;
+    border: 1px solid #e5e5e0;
+    border-radius: 14px;
+    overflow: hidden;
+    margin-bottom: 1rem;
+  }
+  .prah-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 13px 1.25rem;
+    border-bottom: 1px solid #f0f0ec;
+    font-size: 14px;
+    gap: 12px;
+  }
+  .prah-row:last-child { border-bottom: none; }
+  .prah-label { color: #444; flex: 1; }
+  .prah-val { font-weight: 700; font-size: 13px; padding: 4px 12px; border-radius: 7px; white-space: nowrap; }
+  .pv-green { background: #edfaf3; color: #0d7a4a; }
+  .pv-orange { background: #fff0ed; color: #c0390f; }
+  .pv-amber { background: #fffbe8; color: #8a6200; }
+
+  /* TAB: VÝHODY */
+  .pc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  @media (max-width: 540px) { .pc-grid { grid-template-columns: 1fr; } }
+  .pc-card {
+    background: #fff;
+    border: 1px solid #e5e5e0;
+    border-radius: 14px;
+    padding: 1.25rem;
+  }
+  .pc-card h3 {
+    font-size: 15px; font-weight: 700; margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid #f0f0ec;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .pc-item {
+    display: flex; gap: 10px; align-items: flex-start;
+    padding: 5px 0; font-size: 13px; color: #444; line-height: 1.45;
+  }
+  .dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; margin-top: 5px; }
+  .dot-g { background: #1aad6e; }
+  .dot-r { background: #E8381A; }
+  .pc-sep { font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: #bbb; font-weight: 600; margin: 10px 0 4px; }
+
+  /* CTA */
+  .cta {
+    background: #E8381A;
+    color: #fff;
+    border-radius: 14px;
+    padding: 1.5rem 1.5rem;
+    margin-top: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  .cta-text { font-size: 15px; font-weight: 600; line-height: 1.4; }
+  .cta-text span { font-size: 13px; font-weight: 400; opacity: 0.85; display: block; margin-top: 3px; }
+  .cta-btn {
+    background: #fff;
+    color: #E8381A;
+    font-size: 14px;
+    font-weight: 700;
+    padding: 10px 22px;
+    border-radius: 9px;
+    text-decoration: none;
+    white-space: nowrap;
+    flex-shrink: 0;
+    transition: opacity 0.15s;
+  }
+  .cta-btn:hover { opacity: 0.9; }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-label">SmartÚčto, s.r.o. · Kalkulačka 2026</div>
+  <h1>Živnosť alebo <span>s.r.o.</span>?<br>Uvidíte rozdiel v eurách.</h1>
+  <p>Zadajte váš príjem a okamžite zistíte, ktorá forma podnikania vám ročne ušetrí viac peňazí.</p>
+</div>
+
+<div class="container">
+
+  <div class="sliders-box">
+    <h2>Váš príjem a náklady</h2>
+    <div class="slider-row">
+      <label>Ročný príjem (obrat)</label>
+      <input type="range" min="10000" max="200000" step="1000" value="50000" id="prijem" />
+      <span class="slider-val" id="prijem-out">50 000 €</span>
+    </div>
+    <div class="slider-row">
+      <label>Reálne náklady firmy</label>
+      <input type="range" min="0" max="70" step="5" value="30" id="vydavky" />
+      <span class="slider-val" id="vydavky-out">30 %</span>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" onclick="setTab('dane')">Výpočet daní</button>
+    <button class="tab" onclick="setTab('prah')">Kedy sa čo oplatí</button>
+    <button class="tab" onclick="setTab('pc')">Výhody a nevýhody</button>
+  </div>
+
+  <!-- TAB: DANE -->
+  <div id="tab-dane">
+    <div class="cards">
+      <!-- ZIVNOST -->
+      <div class="card" id="z-card">
+        <div class="card-head">
+          <div class="card-icon icon-z">👤</div>
+          <div>
+            <div class="card-title">Živnosť</div>
+            <span class="badge badge-orange" id="z-badge">SZČO</span>
+          </div>
+        </div>
+        <div class="row"><span class="row-label">Príjem</span><span class="row-val" id="z-prijem">—</span></div>
+        <div class="row"><span class="row-label">Výdavky (paušál 60 %)*</span><span class="row-val neg" id="z-vydavky">—</span></div>
+        <div class="row"><span class="row-label">Základ dane</span><span class="row-val" id="z-zaklad">—</span></div>
+        <div class="row"><span class="row-label">Daň z príjmu</span><span class="row-val neg" id="z-dan">—</span></div>
+        <div class="row"><span class="row-label">Zdravotné odvody</span><span class="row-val neg" id="z-zdravotne">—</span></div>
+        <div class="row"><span class="row-label">Sociálne odvody</span><span class="row-val neg" id="z-socialne">—</span></div>
+        <div class="total-block">
+          <span class="total-label">Zostatok</span>
+          <span class="total-val" id="z-zostatok">—</span>
+        </div>
+        <div class="zatazenie" id="z-efektiv">Zaťaženie: —</div>
+      </div>
+
+      <!-- SRO -->
+      <div class="card" id="s-card">
+        <div class="card-head">
+          <div class="card-icon icon-s">🏢</div>
+          <div>
+            <div class="card-title">S.r.o.</div>
+            <span class="badge" id="s-badge">s.r.o.</span>
+          </div>
+        </div>
+        <div class="row"><span class="row-label">Príjem</span><span class="row-val" id="s-prijem">—</span></div>
+        <div class="row"><span class="row-label">Náklady firmy</span><span class="row-val neg" id="s-naklady">—</span></div>
+        <div class="row"><span class="row-label">Zisk pred daňou</span><span class="row-val" id="s-zisk">—</span></div>
+        <div class="row"><span class="row-label">Daň z príjmu PO (21 %)</span><span class="row-val neg" id="s-dan">—</span></div>
+        <div class="row"><span class="row-label">Mzda + odvody konateľa</span><span class="row-val neg" id="s-mzda">—</span></div>
+        <div class="row"><span class="row-label">Daň z dividend (7 %)</span><span class="row-val neg" id="s-divdan">—</span></div>
+        <div class="total-block">
+          <span class="total-label">Zostatok</span>
+          <span class="total-val" id="s-zostatok">—</span>
+        </div>
+        <div class="zatazenie" id="s-efektiv">Zaťaženie: —</div>
+      </div>
+    </div>
+
+    <div class="verdict" id="verdict-text"></div>
+    <p class="note">* Paušálne výdavky živnostníka 60 % (max. 20 000 €/rok). Pri s.r.o. sú použité vaše zadané náklady. Mzda konateľa nastavená na minimálnu úroveň 700 €/mes. Čísla sú orientačné pre rok 2026 a nenahradzujú individuálne daňové poradenstvo.</p>
+  </div>
+
+  <!-- TAB: PRAH -->
+  <div id="tab-prah" style="display:none;">
+    <div class="prah-table">
+      <div class="prah-row"><span class="prah-label">Do 25 000 € ročného príjmu</span><span class="prah-val pv-orange">Živnosť výhodnejšia</span></div>
+      <div class="prah-row"><span class="prah-label">25 000 – 40 000 € ročného príjmu</span><span class="prah-val pv-amber">Závisí od situácie</span></div>
+      <div class="prah-row"><span class="prah-label">Nad 40 000 € ročného príjmu</span><span class="prah-val pv-green">S.r.o. výhodnejšia</span></div>
+      <div class="prah-row"><span class="prah-label">Máte (alebo plánujete) zamestnancov</span><span class="prah-val pv-green">S.r.o. jednoznačne</span></div>
+      <div class="prah-row"><span class="prah-label">Faktúrujete do zahraničia</span><span class="prah-val pv-green">S.r.o. výhodnejšia</span></div>
+      <div class="prah-row"><span class="prah-label">Jednorazový projekt, krátke obdobie</span><span class="prah-val pv-orange">Živnosť výhodnejšia</span></div>
+      <div class="prah-row"><span class="prah-label">Chcete obmedziť osobné ručenie</span><span class="prah-val pv-green">S.r.o. jednoznačne</span></div>
+      <div class="prah-row" style="border:none;"><span class="prah-label">Chcete pridať spoločníka / investora</span><span class="prah-val pv-green">S.r.o. jednoznačne</span></div>
+    </div>
+    <div class="verdict">
+      <strong>Kľúčový princíp:</strong> Na živnosti platíte odvody z každého eura príjmu hneď. V s.r.o. môžete nechať zisk vo firme, vyplácať ho neskôr alebo reinvestovať — a tým legálne odkladáte dane. Čím vyšší príjem, tým väčší rozdiel v prospech s.r.o.
+    </div>
+  </div>
+
+  <!-- TAB: VÝHODY -->
+  <div id="tab-pc" style="display:none;">
+    <div class="pc-grid">
+      <div class="pc-card">
+        <h3>👤 Živnosť</h3>
+        <div class="pc-sep">Výhody</div>
+        <div class="pc-item"><div class="dot dot-g"></div><span>Jednoduchá administratíva, menej papierov</span></div>
+        <div class="pc-item"><div class="dot dot-g"></div><span>Zakladanie zadarmo, rýchlo</span></div>
+        <div class="pc-item"><div class="dot dot-g"></div><span>Paušálne výdavky 60 % bez dokladov</span></div>
+        <div class="pc-item"><div class="dot dot-g"></div><span>Daň 15 % do príjmu 49 790 €</span></div>
+        <div class="pc-item"><div class="dot dot-g"></div><span>Peniaze sú okamžite vaše</span></div>
+        <div class="pc-sep">Nevýhody</div>
+        <div class="pc-item"><div class="dot dot-r"></div><span>Ručíte celým osobným majetkom</span></div>
+        <div class="pc-item"><div class="dot dot-r"></div><span>Odvody rastú priamo s príjmom</span></div>
+        <div class="pc-item"><div class="dot dot-r"></div><span>Horšie vnímanie u veľkých firiem</span></div>
+        <div class="pc-item"><div class="dot dot-r"></div><span>Ťažšie pridať spoločníka alebo investora</span></div>
+      </div>
+      <div class="pc-card">
+        <h3>🏢 S.r.o.</h3>
+        <div class="pc-sep">Výhody</div>
+        <div class="pc-item"><div class="dot dot-g"></div><span>Ručenie len do výšky vkladu (5 000 €)</span></div>
+        <div class="pc-item"><div class="dot dot-g"></div><span>Zisk vo firme = legálne odložená daň</span></div>
+        <div class="pc-item"><div class="dot dot-g"></div><span>Daň z príjmu PO 21 % (len zo zisku)</span></div>
+        <div class="pc-item"><div class="dot dot-g"></div><span>Profesionálny obraz, dôveryhodnosť</span></div>
+        <div class="pc-item"><div class="dot dot-g"></div><span>Jednoduché pridanie spoločníkov</span></div>
+        <div class="pc-sep">Nevýhody</div>
+        <div class="pc-item"><div class="dot dot-r"></div><span>Zakladanie: ~400–800 € a niekoľko týždňov</span></div>
+        <div class="pc-item"><div class="dot dot-r"></div><span>Povinné podvojné účtovníctvo</span></div>
+        <div class="pc-item"><div class="dot dot-r"></div><span>Dividendy zdanené 7 % + zdravotné odvody</span></div>
+        <div class="pc-item"><div class="dot dot-r"></div><span>Vyššia pravidelná administratíva</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div class="cta">
+    <div class="cta-text">
+      Nie ste si istí, čo je pre vás lepšie?
+      <span>Poradíme vám bezplatne.</span>
+    </div>
+    <a class="cta-btn" href="mailto:info@smartucto.sk">Napíšte nám →</a>
+  </div>
+
+</div>
+
+<script>
+  function fmt(n) {
+    return Math.round(n).toLocaleString('sk-SK') + '\u00a0\u20ac';
+  }
+  function pct(n) { return Math.round(n) + '\u00a0%'; }
+
+  function calc() {
+    const prijem = parseInt(document.getElementById('prijem').value);
+    const vydPct = parseInt(document.getElementById('vydavky').value) / 100;
+
+    document.getElementById('prijem-out').textContent = fmt(prijem);
+    document.getElementById('vydavky-out').textContent = Math.round(vydPct * 100) + '\u00a0%';
+
+    // ZIVNOST
+    const zVydavky = Math.min(prijem * 0.60, 20000);
+    const nezdanitelna = 5646;
+    const zZaklad = Math.max(prijem - zVydavky - nezdanitelna, 0);
+    const zDan = zZaklad <= 41445 ? zZaklad * 0.15 : 41445 * 0.15 + (zZaklad - 41445) * 0.19;
+    const zBase = Math.max(prijem - zVydavky, 0);
+    const zZdravne = Math.max(zBase * 0.07, 960);
+    const zSocialne = prijem > 7824 ? Math.min(zBase * 0.169, 10728) : 0;
+    const zZostatok = prijem - zDan - zZdravne - zSocialne;
+    const zZat = Math.round((1 - Math.max(zZostatok,0) / prijem) * 100);
+
+    document.getElementById('z-prijem').textContent = fmt(prijem);
+    document.getElementById('z-vydavky').textContent = '\u2212\u00a0' + fmt(zVydavky);
+    document.getElementById('z-zaklad').textContent = fmt(Math.max(prijem - zVydavky, 0));
+    document.getElementById('z-dan').textContent = '\u2212\u00a0' + fmt(zDan);
+    document.getElementById('z-zdravotne').textContent = '\u2212\u00a0' + fmt(zZdravne);
+    document.getElementById('z-socialne').textContent = '\u2212\u00a0' + fmt(zSocialne);
+    document.getElementById('z-zostatok').textContent = fmt(Math.max(zZostatok, 0));
+    document.getElementById('z-efektiv').textContent = 'Zaťaženie: ' + pct(zZat);
+
+    // SRO
+    const sNaklady = prijem * vydPct;
+    const sMzdaHruba = 700 * 12;
+    const sOdvodyFirma = sMzdaHruba * 0.355;
+    const sOdvodyZam = sMzdaHruba * 0.135;
+    const sDanZMzdy = Math.max(sMzdaHruba - sOdvodyZam - 5646, 0) * 0.19;
+    const sCistyPlat = sMzdaHruba - sOdvodyZam - sDanZMzdy;
+    const sZisk = Math.max(prijem - sNaklady - sMzdaHruba - sOdvodyFirma, 0);
+    const sDan = sZisk * 0.21;
+    const sZiskPoD = sZisk - sDan;
+    const sDivDan = sZiskPoD * 0.07;
+    const sDivZdrav = Math.min(sZiskPoD * 0.14, 2000);
+    const sDividendaNet = sZiskPoD - sDivDan - sDivZdrav;
+    const sCelkom = sDividendaNet + sCistyPlat;
+    const sZat = Math.round((1 - Math.max(sCelkom,0) / prijem) * 100);
+
+    document.getElementById('s-prijem').textContent = fmt(prijem);
+    document.getElementById('s-naklady').textContent = '\u2212\u00a0' + fmt(sNaklady);
+    document.getElementById('s-zisk').textContent = fmt(sZisk);
+    document.getElementById('s-dan').textContent = '\u2212\u00a0' + fmt(sDan);
+    document.getElementById('s-mzda').textContent = '\u2212\u00a0' + fmt(sMzdaHruba + sOdvodyFirma);
+    document.getElementById('s-divdan').textContent = '\u2212\u00a0' + fmt(sDivDan + sDivZdrav);
+    document.getElementById('s-zostatok').textContent = fmt(Math.max(sCelkom, 0));
+    document.getElementById('s-efektiv').textContent = 'Zaťaženie: ' + pct(sZat);
+
+    // Verdict
+    const rozdiel = Math.round(sCelkom - zZostatok);
+    const zCard = document.getElementById('z-card');
+    const sCard = document.getElementById('s-card');
+    const zBadge = document.getElementById('z-badge');
+    const sBadge = document.getElementById('s-badge');
+    let html = '';
+
+    zCard.classList.remove('winner');
+    sCard.classList.remove('winner');
+
+    if (sCelkom > zZostatok + 500) {
+      sCard.classList.add('winner');
+      sBadge.className = 'badge badge-green';
+      sBadge.textContent = 'VÝHODNEJŠIE';
+      zBadge.className = 'badge badge-gray';
+      zBadge.textContent = 'SZČO';
+      html = `<strong>S.r.o. vám ušetrí cca ${fmt(rozdiel)} ročne.</strong> Pri príjme ${fmt(prijem)} sa prechod na s.r.o. jasne oplatí. Čím vyšší príjem, tým väčší rozdiel. Radi vám poradíme, ako na to.`;
+    } else if (zZostatok > sCelkom + 500) {
+      zCard.classList.add('winner');
+      zBadge.className = 'badge badge-green';
+      zBadge.textContent = 'VÝHODNEJŠIE';
+      sBadge.className = 'badge badge-gray';
+      sBadge.textContent = 'S.R.O.';
+      html = `<strong>Živnosť vám ušetrí cca ${fmt(-rozdiel)} ročne.</strong> Pri príjme ${fmt(prijem)} je živnosť výhodnejšia vďaka nižším odvodom a paušálnym výdavkom. S rastúcim príjmom sa to zmení.`;
+    } else {
+      sBadge.className = 'badge badge-gray';
+      sBadge.textContent = 'S.R.O.';
+      zBadge.className = 'badge badge-gray';
+      zBadge.textContent = 'SZČO';
+      html = `<strong>Rozdiel je minimálny (do 500 €/rok).</strong> Rozhodnutie závisí od iných faktorov: osobné ručenie, plány rastu, imidž u klientov. Radi vám pomôžeme zvážiť všetky aspekty.`;
+    }
+    document.getElementById('verdict-text').innerHTML = html;
+  }
+
+  function setTab(name) {
+    ['dane','prah','pc'].forEach(t => {
+      document.getElementById('tab-' + t).style.display = (t === name) ? '' : 'none';
+    });
+    document.querySelectorAll('.tab').forEach((el, i) => {
+      el.classList.toggle('active', ['dane','prah','pc'][i] === name);
+    });
+  }
+
+  document.getElementById('prijem').addEventListener('input', calc);
+  document.getElementById('vydavky').addEventListener('input', calc);
+  calc();
+</script>
+</body>
+</html>
