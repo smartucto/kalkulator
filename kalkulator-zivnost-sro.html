@@ -25,11 +25,13 @@
 
   .sliders-box { background: #fff; border: 1px solid #e5e5e0; border-radius: 14px; padding: 1.25rem 1rem; margin-bottom: 1.25rem; }
   .sliders-box h2 { font-size: 12px; text-transform: uppercase; letter-spacing: 0.1em; color: #888; font-weight: 600; margin-bottom: 1rem; }
-  .slider-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 1rem; }
-  @media (max-width: 580px) {
-    .slider-row input[type=range] { height: 6px; }
-    .slider-row input[type=range]::-webkit-slider-thumb { width: 28px; height: 28px; }
-  }
+  .stepper-row { margin-bottom: 1rem; }
+  .stepper-row:last-child { margin-bottom: 0; }
+  .stepper-row label { font-size: 13px; color: #444; display: block; margin-bottom: 8px; }
+  .stepper { display: flex; align-items: center; gap: 0; border: 1px solid #e5e5e0; border-radius: 10px; overflow: hidden; }
+  .stepper button { background: #f7f7f5; border: none; font-size: 22px; font-weight: 300; width: 52px; height: 52px; cursor: pointer; color: #0f2a5e; flex-shrink: 0; transition: background 0.15s; -webkit-tap-highlight-color: transparent; }
+  .stepper button:active { background: #e8f0fe; }
+  .stepper span { flex: 1; text-align: center; font-size: 17px; font-weight: 700; color: #0f2a5e; padding: 0 8px; }
   .slider-row:last-child { margin-bottom: 0; }
   .slider-row label { font-size: 13px; color: #444; width: 100%; }
   .slider-row input[type=range] { flex: 1; min-width: 0; -webkit-appearance: none; height: 4px; border-radius: 2px; background: #e5e5e0; outline: none; cursor: pointer; touch-action: pan-x; }
@@ -110,15 +112,23 @@
 
   <div class="sliders-box">
     <h2>Váš príjem a náklady</h2>
-    <div class="slider-row">
+    <div class="stepper-row">
       <label>Ročný príjem (obrat)</label>
-      <input type="range" min="10000" max="200000" step="1000" value="50000" id="prijem" style="touch-action: pan-x;" />
-      <span class="slider-val" id="prijem-out">50 000 €</span>
+      <div class="stepper">
+        <button onclick="step('prijem', -5000)">−</button>
+        <span id="prijem-out">50 000 €</span>
+        <button onclick="step('prijem', 5000)">+</button>
+      </div>
+      <input type="hidden" id="prijem" value="50000" />
     </div>
-    <div class="slider-row">
+    <div class="stepper-row">
       <label>Reálne náklady firmy (pre s.r.o.)</label>
-      <input type="range" min="0" max="70" step="5" value="20" id="vydavky" style="touch-action: pan-x;" />
-      <span class="slider-val" id="vydavky-out">20 %</span>
+      <div class="stepper">
+        <button onclick="step('vydavky', -5)">−</button>
+        <span id="vydavky-out">20 %</span>
+        <button onclick="step('vydavky', 5)">+</button>
+      </div>
+      <input type="hidden" id="vydavky" value="20" />
     </div>
   </div>
 
@@ -380,6 +390,17 @@ function setTab(name) {
   document.querySelectorAll('.tab').forEach((el, i) => {
     el.classList.toggle('active', ['dane','prah','pc'][i] === name);
   });
+}
+
+function step(id, delta) {
+  var el = document.getElementById(id);
+  var val = parseInt(el.value) + delta;
+  if (id === 'prijem') val = Math.min(200000, Math.max(10000, val));
+  if (id === 'vydavky') val = Math.min(70, Math.max(0, val));
+  el.value = val;
+  if (id === 'prijem') document.getElementById('prijem-out').textContent = fmt(val).replace('\u00a0\u20ac', '\u00a0\u20ac');
+  if (id === 'vydavky') document.getElementById('vydavky-out').textContent = val + '\u00a0%';
+  calc();
 }
 
 document.getElementById('prijem').addEventListener('input', calc);
