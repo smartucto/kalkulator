@@ -20,7 +20,6 @@
     overflow-x: hidden;
   }
 
-  /* Dekoratívne kruhy v pozadí */
   body::before {
     content: '';
     position: fixed;
@@ -61,9 +60,7 @@
     to { opacity: 1; transform: translateY(0); }
   }
 
-  .logo-wrap {
-    margin-bottom: 1.5rem;
-  }
+  .logo-wrap { margin-bottom: 1.5rem; }
 
   .logo-circle {
     width: 80px;
@@ -106,6 +103,15 @@
     margin-bottom: 2rem;
   }
 
+  .section-label {
+    font-size: 11px;
+    color: rgba(255,255,255,0.35);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    text-align: left;
+  }
+
   .links {
     display: flex;
     flex-direction: column;
@@ -137,6 +143,13 @@
 
   .link-btn.primary:hover { box-shadow: 0 4px 20px rgba(45,127,249,0.4); }
 
+  .link-btn.green {
+    background: linear-gradient(135deg, #16a34a, #15803d);
+    color: #fff;
+  }
+
+  .link-btn.green:hover { box-shadow: 0 4px 20px rgba(22,163,74,0.4); }
+
   .link-btn.secondary {
     background: rgba(255,255,255,0.08);
     color: #fff;
@@ -157,15 +170,25 @@
   }
 
   .primary .btn-icon { background: rgba(255,255,255,0.2); }
+  .green .btn-icon { background: rgba(255,255,255,0.2); }
   .secondary .btn-icon { background: rgba(255,255,255,0.1); }
 
   .btn-text { flex: 1; }
   .btn-label { display: block; font-weight: 600; font-size: 15px; }
   .btn-sub { display: block; font-size: 12px; opacity: 0.7; margin-top: 1px; }
 
-  .btn-arrow {
-    font-size: 18px;
-    opacity: 0.6;
+  .btn-arrow { font-size: 18px; opacity: 0.6; }
+
+  .badge {
+    display: inline-block;
+    background: rgba(255,255,255,0.2);
+    border-radius: 20px;
+    padding: 2px 8px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    margin-left: 6px;
+    vertical-align: middle;
   }
 
   .divider {
@@ -197,6 +220,9 @@
   </p>
 
   <div class="links">
+
+    <div class="section-label">🛠 Nástroje zadarmo</div>
+
     <a class="link-btn primary" href="https://smartucto.github.io/kalkulator/kalkulator-zivnost-sro.html" target="_blank">
       <div class="btn-icon">🧮</div>
       <div class="btn-text">
@@ -205,6 +231,19 @@
       </div>
       <span class="btn-arrow">→</span>
     </a>
+
+    <div class="section-label">📦 Na stiahnutie</div>
+
+    <a class="link-btn green" href="https://payhip.com/b/wx2RY" target="_blank">
+      <div class="btn-icon">📊</div>
+      <div class="btn-text">
+        <span class="btn-label">Evidencia príjmov SZČO 2026 <span class="badge">17,99 €</span></span>
+        <span class="btn-sub">Excel šablóna + návod pre živnostníkov</span>
+      </div>
+      <span class="btn-arrow">→</span>
+    </a>
+
+    <div class="section-label">🔗 Ďalšie odkazy</div>
 
     <a class="link-btn secondary" href="https://www.smartucto.sk" target="_blank">
       <div class="btn-icon">🌐</div>
@@ -223,6 +262,7 @@
       </div>
       <span class="btn-arrow">→</span>
     </a>
+
   </div>
 
   <div class="divider"></div>
