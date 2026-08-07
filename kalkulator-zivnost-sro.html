@@ -175,6 +175,7 @@
         <div class="row"><span class="row-label">Zisk pred daňou</span><span class="row-val" id="s-zisk">—</span></div>
         <div class="row"><span class="row-label">Daň z príjmu PO (10 % / 21 %)*</span><span class="row-val neg" id="s-dan">—</span></div>
         <div class="row"><span class="row-label">Daň z dividend (7 %)</span><span class="row-val neg" id="s-divdan">—</span></div>
+        <div class="row"><span class="row-label">Zdravotné poistné konateľa (bez mzdy)</span><span class="row-val neg" id="s-poistne">—</span></div>
         <div class="total-block">
           <span class="total-label">Zostatok</span>
           <span class="total-val" id="s-zostatok">—</span>
@@ -184,14 +185,15 @@
     </div>
 
     <div class="verdict" id="verdict-text"></div>
-    <p class="note">* Živnosť: sadzba 15 % pri príjmoch do 100 000 €, pri vyšších príjmoch progresívne pásma (19/25/30/35 %). Odvody ZP a SP sú súčasťou daňových výdavkov. S.r.o.: 10 % pri príjmoch do 100 000 €, 21 % nad 100 000 €. Kalkulačka počíta s konateľom bez mzdy — celý zisk je vyplatený ako dividenda (7 % zrážková daň, bez zdravotných odvodov). Čísla sú orientačné pre rok 2026 a nenahradzujú individuálne daňové poradenstvo.</p>
+    <p class="note">* Živnosť: sadzba 15 % pri príjmoch do 100 000 €, pri vyšších príjmoch progresívne pásma (19/25/30/35 %). Odvody ZP a SP sa počítajú zo skutočného vymeriavacieho základu SZČO (základ dane z podnikania ÷ 1,486 ÷ 12), s minimom 121,92 €/mes. (ZP) a 303,11 €/mes. (SP) a maximom 5 557,26 €/mes. pre SP. S.r.o.: 10 % pri príjmoch do 100 000 €, 21 % nad 100 000 €. Kalkulačka počíta s konateľom bez mzdy — celý zisk je vyplatený ako dividenda (7 % zrážková daň) a konateľ platí zdravotné poistné ako samoplatiteľ (min. 121,92 €/mes., ak nemá iné zdravotné poistenie). Čísla sú orientačné pre rok 2026 a nenahradzujú individuálne daňové poradenstvo.</p>
   </div>
 
   <div id="tab-prah" style="display:none;">
     <div class="prah-table">
-      <div class="prah-row"><span class="prah-label">Do 20 000 € ročného príjmu</span><span class="prah-val pv-orange">Živnosť výhodnejšia</span></div>
-      <div class="prah-row"><span class="prah-label">20 000 – 40 000 € ročného príjmu</span><span class="prah-val pv-amber">Závisí od nákladov</span></div>
-      <div class="prah-row"><span class="prah-label">Nad 40 000 € ročného príjmu</span><span class="prah-val pv-green">S.r.o. väčšinou výhodnejšia</span></div>
+      <div class="prah-row"><span class="prah-label">Nízke náklady firmy (do 10 % z príjmu)</span><span class="prah-val pv-amber">S.r.o. sa oplatí zvyčajne od ~55 000 – 60 000 €</span></div>
+      <div class="prah-row"><span class="prah-label">Stredné náklady firmy (~20 % z príjmu)</span><span class="prah-val pv-amber">S.r.o. sa oplatí zvyčajne až od ~150 000 €</span></div>
+      <div class="prah-row"><span class="prah-label">Vyššie náklady firmy (30 % a viac)</span><span class="prah-val pv-orange">Živnosť zvyčajne výhodnejšia aj pri vysokom príjme</span></div>
+      <div class="prah-row"><span class="prah-label">Zisk necháte vo firme (nevyplácate hneď)</span><span class="prah-val pv-green">S.r.o. výhodnejšie — legálny odklad dane</span></div>
       <div class="prah-row"><span class="prah-label">Máte alebo plánujete zamestnancov</span><span class="prah-val pv-green">S.r.o. jednoznačne</span></div>
       <div class="prah-row"><span class="prah-label">Faktúrujete do zahraničia</span><span class="prah-val pv-green">S.r.o. výhodnejšia</span></div>
       <div class="prah-row"><span class="prah-label">Jednorazový projekt, krátke obdobie</span><span class="prah-val pv-orange">Živnosť výhodnejšia</span></div>
@@ -199,7 +201,7 @@
       <div class="prah-row"><span class="prah-label">Chcete pridať spoločníka / investora</span><span class="prah-val pv-green">S.r.o. jednoznačne</span></div>
     </div>
     <div class="verdict">
-      <strong>Kľúčový princíp:</strong> Na živnosti platíte odvody a daň z každého eura príjmu priebežne. V s.r.o. môžete zisk nechať vo firme, vyplácať ho neskôr alebo reinvestovať — a tým legálne odkladáte dane. S.r.o. má od 2026 sadzbu dane len 10 % pri obrate do 100 000 €, čo je výrazná výhoda oproti živnosti.
+      <strong>Kľúčový princíp:</strong> Hranica, odkedy sa s.r.o. oplatí, závisí hlavne od toho, aké má firma reálne náklady a ako vyplácate zisk. Táto kalkulačka počíta najprísnejší scenár pre s.r.o. — celý zisk vyplatený hneď ako dividenda, žiadna mzda konateľa. Ak zisk necháte vo firme alebo si časť vyplácate ako mzdu, hranica sa posúva nižšie. Veľa podnikateľov si myslí, že s.r.o. je vždy výhodnejšie — v skutočnosti to pri bežných príjmoch (do cca 50-60 tisíc €) často vôbec neplatí.
     </div>
   </div>
 
@@ -255,18 +257,22 @@ function calcZivnost(prijem) {
   // Krok 1: Pausalne vydavky 60%, max 20 000 €
   const pausal = Math.min(prijem * 0.60, 20000);
 
-  // Krok 2: Vymeriavaci zaklad pre odvody = (prijem - pausal) / 2
-  // Odvody sa počítajú z vymeriavacieho základu, ktorý závisí od príjmu mínus paušál
-  const vm = Math.max(prijem - pausal, 0) / 2;
+  // Krok 2: Skutočný vymeriavací základ SZČO (2026):
+  // rocny VZ = zaklad dane z podnikania / koeficient 1,486
+  // (zjednodušenie: bez pripočítania minuloročného zaplateného poistného,
+  //  keďže kalkulačka pracuje len s aktuálnym príjmom)
+  const zakladBiznisRocny = Math.max(prijem - pausal, 0);
+  const vzRocny = zakladBiznisRocny / 1.486;
 
-  // Zdravotné odvody 16%, min 1 463.04 €/rok (121.92 * 12)
+  // Zdravotné odvody 16%, min 1 463,04 €/rok (121,92 €/mes.), bez stropu
   const zdravMinRok = 1463.04;
-  const zdravotne = Math.max(vm * 0.16, zdravMinRok);
+  const zdravotne = Math.max(vzRocny * 0.16, zdravMinRok);
 
-  // Sociálne odvody 33.15%, min 303.11/mes = 3 637.32 €/rok, max VM 16 764 €/mes
+  // Sociálne odvody 33,15%, min 3 637,32 €/rok (303,11 €/mes.),
+  // max vymeriavací základ 16 764 €/mes.
   const socMinRok = 3637.32;
   const socMaxOdvod = 16764 * 12 * 0.3315;
-  const socialne = Math.min(Math.max(vm * 0.3315, socMinRok), socMaxOdvod);
+  const socialne = Math.min(Math.max(vzRocny * 0.3315, socMinRok), socMaxOdvod);
 
   // Krok 3: Základ dane = príjem − paušál − zaplatené odvody ZP − zaplatené odvody SP
   const vydavkyCelkom = pausal + zdravotne + socialne;
@@ -315,9 +321,15 @@ function calcSro(prijem, vydPct) {
   const danPO = prijem <= 100000 ? zisk * 0.10 : zisk * 0.21;
   const ziskPoD = Math.max(zisk - danPO, 0);
   const divDan = ziskPoD * 0.07;
-  const celkom = ziskPoD - divDan;
+
+  // Konateľ bez mzdy a bez iného zdravotného poistenia musí platiť
+  // minimálne zdravotné poistné ako samoplatiteľ: 121,92 €/mes. = 1 463,04 €/rok (2026)
+  const poistneKonatel = 1463.04;
+
+  const celkomPredPoistnym = ziskPoD - divDan;
+  const celkom = Math.max(celkomPredPoistnym - poistneKonatel, 0);
   const zatazenie = Math.round((1 - Math.max(celkom, 0) / prijem) * 100);
-  return { naklady, zisk, danPO, divDan, celkom: Math.max(celkom, 0), zatazenie };
+  return { naklady, zisk, danPO, divDan, poistneKonatel, celkom, zatazenie };
 }
 
 function calc() {
@@ -347,6 +359,7 @@ function calc() {
   document.getElementById('s-zisk').textContent = fmt(s.zisk);
   document.getElementById('s-dan').textContent = '\u2212\u00a0' + fmt(s.danPO);
   document.getElementById('s-divdan').textContent = '\u2212\u00a0' + fmt(s.divDan);
+  document.getElementById('s-poistne').textContent = '\u2212\u00a0' + fmt(s.poistneKonatel);
   document.getElementById('s-zostatok').textContent = fmt(s.celkom);
   document.getElementById('s-efektiv').textContent = 'Zaťaženie: ' + pct(s.zatazenie);
 
@@ -367,14 +380,14 @@ function calc() {
     sBadge.textContent = 'VÝHODNEJŠIE';
     zBadge.className = 'badge badge-gray';
     zBadge.textContent = 'SZČO';
-    html = `<strong>S.r.o. vám ušetrí cca ${fmt(rozdiel)} ročne.</strong> Vďaka sadzbe dane PO len 10 % (do 100k €) a možnosti nechať zisk vo firme sa s.r.o. pri tomto príjme jednoznačne oplatí. Radi vám pomôžeme s prechodom.`;
+    html = `<strong>S.r.o. vám ušetrí cca ${fmt(rozdiel)} ročne.</strong> Vďaka sadzbe dane PO len 10 % (do 100k €) a možnosti nechať zisk vo firme sa s.r.o. pri tomto príjme a nákladoch oplatí aj pri vyplatení celého zisku ako dividendy. Radi vám pomôžeme s prechodom.`;
   } else if (z.zostatok > s.celkom + 300) {
     zCard.classList.add('winner');
     zBadge.className = 'badge badge-green';
     zBadge.textContent = 'VÝHODNEJŠIA';
     sBadge.className = 'badge badge-gray';
     sBadge.textContent = 'S.R.O.';
-    html = `<strong>Živnosť vám ušetrí cca ${fmt(-rozdiel)} ročne.</strong> Pri tomto príjme a výške nákladov je živnosť výhodnejšia — nižšia administratíva a paušálne výdavky 60 % hrajú v jej prospech. S rastúcim príjmom sa to môže zmeniť.`;
+    html = `<strong>Živnosť vám ušetrí cca ${fmt(-rozdiel)} ročne.</strong> Pri tomto príjme a nákladoch je živnosť výhodnejšia — paušálne výdavky 60 % a jednoduchšie odvody hrajú v jej prospech. Pri vyššom príjme, nižších nákladoch firmy, alebo ak by ste časť zisku nechali vo firme namiesto vyplatenia ako dividendy, sa to môže zmeniť.`;
   } else {
     zBadge.className = 'badge badge-gray'; zBadge.textContent = 'SZČO';
     sBadge.className = 'badge badge-gray'; sBadge.textContent = 'S.R.O.';
